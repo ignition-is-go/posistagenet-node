@@ -45,7 +45,7 @@ export namespace psn {
 		}
 	}
 
-	export const DEFAULT_MULTICAST_ADDRESS = "236.10.10.10"
-	export const DEFAULT_PORT = "56565"
+	export const DEFAULT_MULTICAST_ADDRESS = '236.10.10.10'
+	export const DEFAULT_PORT = 56565
 
 }
