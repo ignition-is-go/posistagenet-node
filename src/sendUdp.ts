@@ -41,19 +41,25 @@ const trackers = Array(10).fill(theTrackedThing).map((t, idx) => ({
 const timestamp = () => (Date.now() - startTime) * 1000
 
 const sendInfo = (soc: Socket) => {
-	const packet = encodeInfoPacket(timestamp(), counter, theSystem, trackers)
-	soc.send(packet, 0, packet.length, psn.DEFAULT_PORT, psn.DEFAULT_MULTICAST_ADDRESS, () => {
-		console.log(`Sending infoPacket "${packet}"`)
-	})
+	const packets = encodeInfoPacket(timestamp(), counter, theSystem, trackers)
+
+	packets.forEach(packet =>
+		soc.send(packet, 0, packet.length, psn.DEFAULT_PORT, psn.DEFAULT_MULTICAST_ADDRESS, () => {
+			console.log(`Sending infoPacket ${packet}`)
+		}),
+	)
+
 	counter++
 }
 
 const sendData = (soc: Socket) => {
-	const packet = encodeDataPacket(timestamp(), counter, theSystem, trackers)
-	soc.send(packet, 0, packet.length, psn.DEFAULT_PORT, psn.DEFAULT_MULTICAST_ADDRESS, () => {
-		console.log(`Sending dataPacket "${packet}"`)
-	})
+	const packets = encodeDataPacket(timestamp(), counter, theSystem, trackers)
 
+	packets.forEach(packet =>
+		soc.send(packet, 0, packet.length, psn.DEFAULT_PORT, psn.DEFAULT_MULTICAST_ADDRESS, () => {
+			console.log(`Sending dataPacket ${packet}`)
+		}),
+	)
 }
 
 socket.on('listening', () => {

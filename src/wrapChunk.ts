@@ -4,7 +4,8 @@
 
 export const wrapChunk = (
 	childChunks: Buffer[] | Buffer,
-	chunkId, hasSubchunks: boolean,
+	chunkId,
+	hasSubchunks: boolean,
 ): Buffer => {
 	const size = 4
 	const children = Buffer.concat(Array.isArray(childChunks) ? childChunks : [childChunks])

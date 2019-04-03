@@ -18,10 +18,10 @@ export const packetHeader = (
 	return infoHeaderBuffer
 }
 
-export const segmentPacket = (childChunks: Buffer | Buffer[]): Buffer[] => {
-	const fullPacket = Buffer.concat(Array.isArray(childChunks) ? childChunks : [childChunks])
-	// todo: split full packet into chunks of psn.MAX_PACKET_SIZE
+// export const segmentPacket = (childChunks: Buffer | Buffer[]): Buffer[] => {
+// 	const fullPacket = Buffer.concat(Array.isArray(childChunks) ? childChunks : [childChunks])
+// 	// todo: split full packet into chunks of psn.MAX_PACKET_SIZE
 
-	// todo: return split up packets
-	return []
-}
+// 	// todo: return split up packets
+// 	return []
+// }

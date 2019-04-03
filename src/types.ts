@@ -48,6 +48,6 @@ export namespace psn {
 	export const DEFAULT_MULTICAST_ADDRESS = '236.10.10.10'
 	export const DEFAULT_PORT = 56565
 	// max packet is 1500 bytes for udp, less the 4 byte header
-	export const MAX_PACKET_SIZE = 1500 - 4
+	export const MAX_PACKET_SIZE = 150
 
 }
