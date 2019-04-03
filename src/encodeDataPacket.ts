@@ -1,3 +1,4 @@
+import { packetHeader } from './packetHeader'
 import { psn } from './types'
 import { wrapChunk } from './wrapChunk'
 
@@ -7,6 +8,7 @@ export const encodeDataPacket = (
 	system: psn.System,
 	trackerList: psn.Tracker[],
 ) => {
+
 	const trackerListChunk = wrapChunk(
 		trackerList.map(t => wrapChunk(
 			trackerDataChunks(t),
@@ -16,8 +18,18 @@ export const encodeDataPacket = (
 		psn.DATA_PACKET.CHUNKS.TRACKER_LIST,
 		true,
 	)
+	const packetHeaderChunk = wrapChunk(
+		packetHeader(timestamp, frame, 1, system),
+		psn.DATA_PACKET.CHUNKS.HEADER,
+		false,
+	)
 
-	// TODO: finish data packet
+	return wrapChunk(
+		[packetHeaderChunk, trackerListChunk],
+		psn.DATA_PACKET.HEADER,
+		true,
+	)
+
 }
 
 const trackerDataChunks = (tracker: psn.Tracker): Buffer[] => {
@@ -29,7 +41,6 @@ const trackerDataChunks = (tracker: psn.Tracker): Buffer[] => {
 		wrapChunk(Buffer.from([1]), 0x0003, false),
 		vecToChunk(tracker.acceleration, 0x0004),
 		vecToChunk(tracker.target, 0x0005),
-
 	]
 }
 
