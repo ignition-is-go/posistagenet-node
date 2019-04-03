@@ -65,7 +65,7 @@ export const encodeInfoPacket = (
 	return packets
 }
 
-export function createInfoPacket(
+function createInfoPacket(
 	infoPacketHeaderChunk: Buffer,
 	systemNameChunk: Buffer,
 	trackerChunkList: Buffer[],

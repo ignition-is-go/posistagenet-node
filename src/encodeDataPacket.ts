@@ -74,7 +74,7 @@ const vecToChunk = (vec: psn.Vector3, chunkId: number): Buffer => {
 	)
 }
 
-export function createDataPacket(
+function createDataPacket(
 	infoPacketHeaderChunk: Buffer,
 	trackerChunkList: Buffer[],
 ) {
