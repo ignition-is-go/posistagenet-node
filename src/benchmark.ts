@@ -28,7 +28,7 @@ const trackers = Array(10).fill(theTrackedThing).map((t, idx) => ({
 encodeInfoPacket(
 	1,
 	1,
-	{ name: 'Test', version: '1.1' },
+	{ name: 'Test', version: '2.2' },
 	trackers,
 )
 
@@ -36,7 +36,7 @@ console.time('encodeInfoPacket-1x')
 encodeInfoPacket(
 	1,
 	1,
-	{ name: 'Test', version: '1.1' },
+	{ name: 'Test', version: '2.2' },
 	trackers,
 )
 console.timeEnd('encodeInfoPacket-1x')
@@ -46,7 +46,7 @@ Array(60).fill({}).forEach(() =>
 	encodeInfoPacket(
 		1,
 		1,
-		{ name: 'Test', version: '1.1' },
+		{ name: 'Test', version: '2.2' },
 		trackers,
 	),
 )
@@ -57,7 +57,7 @@ Array(1000).fill({}).forEach(() =>
 	encodeInfoPacket(
 		1,
 		1,
-		{ name: 'Test', version: '1.1' },
+		{ name: 'Test', version: '2.2' },
 		trackers,
 	),
 )
@@ -67,7 +67,7 @@ console.time('encodeDataPacket-1x')
 encodeDataPacket(
 	1,
 	1,
-	{ name: 'Test', version: '1.1' },
+	{ name: 'Test', version: '2.2' },
 	trackers,
 )
 console.timeEnd('encodeDataPacket-1x')
@@ -77,7 +77,7 @@ Array(60).fill({}).forEach(() =>
 	encodeDataPacket(
 		1,
 		1,
-		{ name: 'Test', version: '1.1' },
+		{ name: 'Test', version: '2.2' },
 		trackers,
 	),
 )
@@ -88,7 +88,7 @@ Array(1000).fill({}).forEach(() =>
 	encodeDataPacket(
 		1,
 		1,
-		{ name: 'Test', version: '1.1' },
+		{ name: 'Test', version: '2.2' },
 		trackers,
 	),
 )
