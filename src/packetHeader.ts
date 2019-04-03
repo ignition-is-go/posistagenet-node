@@ -13,8 +13,15 @@ export const packetHeader = (
 	infoHeaderBuffer.writeUInt8(parseInt(versionParts[0], 10), 8)
 	infoHeaderBuffer.writeUInt8(parseInt(versionParts[1], 10), 9)
 	infoHeaderBuffer.writeUInt8(frame, 10)
-	// TODO: implement breaking across multiple frames
-	infoHeaderBuffer.writeUInt8(1, 11)
+	infoHeaderBuffer.writeUInt8(packets, 11)
 
 	return infoHeaderBuffer
+}
+
+export const segmentPacket = (childChunks: Buffer | Buffer[]): Buffer[] => {
+	const fullPacket = Buffer.concat(Array.isArray(childChunks) ? childChunks : [childChunks])
+	// todo: split full packet into chunks of psn.MAX_PACKET_SIZE
+
+	// todo: return split up packets
+	return []
 }
