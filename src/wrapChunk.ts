@@ -14,10 +14,10 @@ export const wrapChunk = (
 	// we have to take apart the length manually
 	// then repack the 16LE shifted by 1 bit for the subchunks
 
-	const lengthMsb = children.length >> 8
+	const lengthMsb = (children.length >> 8) % 127
 	const lengthLsb = children.length % 256
 	chunkHeader.writeUInt8(lengthLsb, 2)
-	chunkHeader.writeUInt8((lengthMsb) + (hasSubchunks ? 1 : 0) << 7, 3)
+	chunkHeader.writeUInt8((lengthMsb) + ((hasSubchunks ? 1 : 0) << 7), 3)
 	// chunkHeader.writeUInt16LE((lengthLsb << 9) + (lengthMsb << 1) + (hasSubchunks ? 1 : 0), 2)
 	// chunkHeader.writeUInt32LE(
 	// 	(chunkId << 16) + ((children.length) << 1) + (hasSubchunks ? 1 : 0),
