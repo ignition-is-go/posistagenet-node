@@ -67,8 +67,12 @@ const trackerDataChunks = (tracker: Tracker): Buffer[] => {
 }
 
 const vecToChunk = (vec: Vector3, chunkId: number): Buffer => {
+	const buffer = Buffer.alloc(12)
+	buffer.writeFloatLE(vec.x, 0)
+	buffer.writeFloatLE(vec.y, 4)
+	buffer.writeFloatLE(vec.z, 8)
 	return wrapChunk(
-		Buffer.from(new Float32Array([vec.x, vec.y, vec.z])),
+		buffer,
 		chunkId,
 		false,
 	)
