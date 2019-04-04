@@ -1,6 +1,6 @@
 {
 	"name": "@lucidcreative/posistagenet-node",
-	"version": "0.0.1",
+	"version": "0.1.0",
 	"author": "KBjordahl",
 	"description": "NodeJS implementation of PosiStageNet https://www.posistage.net/",
 	"main": "dist/index.js",
