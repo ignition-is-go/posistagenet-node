@@ -1,14 +1,7 @@
-import { encodeDataPacket } from './encodeDataPacket'
-import { encodeInfoPacket } from './encodeInfoPacket'
-import { psn as psn_lib } from './types'
-import { multicastHelper as createMulticastSocket } from './utils/multicastHelper'
-
-export const psn = {
-	...psn_lib,
-	encodeDataPacket,
-	encodeInfoPacket,
-	createMulticastSocket,
-}
+export { encodeDataPacket } from './encodeDataPacket'
+export { encodeInfoPacket } from './encodeInfoPacket'
+export * from './types'
+export { multicastHelper as createMulticastSocket } from './utils/multicastHelper'
 
 // require('./sendUdp')
 // require('./benchmark')

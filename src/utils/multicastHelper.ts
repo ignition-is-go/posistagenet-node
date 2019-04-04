@@ -1,13 +1,14 @@
 import { createSocket } from 'dgram'
-import { psn } from '../types'
+import { DEFAULT_MULTICAST_ADDRESS, DEFAULT_PORT } from '../types'
 
 // this creates a socket for sending
 export const multicastHelper = (localIp: string) => {
-	return createSocket({
+	const socket = createSocket({
 		type: 'udp4',
 		reuseAddr: true,
-	}).bind({
-		port: psn.DEFAULT_PORT,
+	})
+	socket.bind({
+		port: DEFAULT_PORT,
 		address: localIp,
 		exclusive: false,
 	})

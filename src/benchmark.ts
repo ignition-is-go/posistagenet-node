@@ -1,6 +1,6 @@
 import { encodeDataPacket } from './encodeDataPacket'
 import { encodeInfoPacket } from './encodeInfoPacket'
-import { psn } from './types'
+import { Tracker } from './types'
 
 const zeroVector = {
 	x: 0,
@@ -8,7 +8,7 @@ const zeroVector = {
 	z: 0,
 }
 
-const theTrackedThing: psn.Tracker = {
+const theTrackedThing: Tracker = {
 	id: 1,
 	name: 'Test Tracked Thing',
 	orientation: zeroVector,

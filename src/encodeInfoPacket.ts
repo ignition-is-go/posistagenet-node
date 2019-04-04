@@ -1,16 +1,16 @@
 import { packetHeader } from './packetHeader'
-import { psn } from './types'
+import { INFO_PACKET, MAX_PACKET_SIZE, System, Tracker } from './types'
+import { getUsedSize } from './utils/getUsedSize'
 import { wrapChunk } from './wrapChunk'
-import { getUsedSize } from './utils/getUsedSize';
 
 export const encodeInfoPacket = (
 	timestamp: number,
 	frame: number,
-	system: psn.System,
-	trackerList: psn.Tracker[],
+	system: System,
+	trackerList: Tracker[],
 ) => {
 
-	const CHUNKS = psn.INFO_PACKET.CHUNKS
+	const CHUNKS = INFO_PACKET.CHUNKS
 
 	const systemNameChunk = wrapChunk(
 		[Buffer.from(system.name)],
@@ -41,7 +41,7 @@ export const encodeInfoPacket = (
 		)
 
 		const totalSize = initialUsedBytes + getUsedSize(trackerChunkList) + trackerChunk.byteLength
-		if (totalSize > psn.MAX_PACKET_SIZE) {
+		if (totalSize > MAX_PACKET_SIZE) {
 
 			packets.push(createInfoPacket(
 				infoPacketHeaderChunk,
@@ -73,16 +73,15 @@ function createInfoPacket(
 
 	const trackerListChunk = wrapChunk(
 		trackerChunkList,
-		psn.INFO_PACKET.CHUNKS.TRACKER_LIST,
+		INFO_PACKET.CHUNKS.TRACKER_LIST,
 		true,
 	)
 
 	const packet = wrapChunk(
 		[infoPacketHeaderChunk, systemNameChunk, trackerListChunk],
-		psn.INFO_PACKET.HEADER,
+		INFO_PACKET.HEADER,
 		true,
 	)
 
 	return packet
 }
-

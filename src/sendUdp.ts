@@ -1,7 +1,7 @@
 import { createSocket, Socket } from 'dgram'
 import { encodeDataPacket } from './encodeDataPacket'
 import { encodeInfoPacket } from './encodeInfoPacket'
-import { psn } from './types'
+import { DEFAULT_MULTICAST_ADDRESS, DEFAULT_PORT, System, Tracker } from './types'
 
 let counter = 1
 const fps = 250
@@ -10,9 +10,9 @@ const startTime = Date.now()
 const socket = createSocket({ type: 'udp4', reuseAddr: true })
 
 // the address here is the local ip of the NIC to use
-socket.bind({ port: psn.DEFAULT_PORT, address: '192.168.1.4' })
+socket.bind({ port: DEFAULT_PORT, address: '192.168.1.4' })
 
-const theSystem: psn.System = {
+const theSystem: System = {
 	name: 'Node PSN Server',
 	version: '2.02',
 }
@@ -23,7 +23,7 @@ const zeroVector = {
 	z: 0,
 }
 
-const theTrackedThing: psn.Tracker = {
+const theTrackedThing: Tracker = {
 	id: 1,
 	name: 'Test Tracked Thing',
 	orientation: zeroVector,
@@ -61,7 +61,7 @@ const sendInfo = (soc: Socket) => {
 	const packets = encodeInfoPacket(timestamp(), counter, theSystem, trackers)
 
 	packets.forEach(packet =>
-		soc.send(packet, 0, packet.length, psn.DEFAULT_PORT, psn.DEFAULT_MULTICAST_ADDRESS, () => {
+		soc.send(packet, 0, packet.length, DEFAULT_PORT, DEFAULT_MULTICAST_ADDRESS, () => {
 			console.log(`Sending infoPacket ${packet}`)
 		}),
 	)
@@ -72,7 +72,7 @@ const sendData = (soc: Socket) => {
 	const packets = encodeDataPacket(timestamp(), counter, theSystem, trackers)
 
 	packets.forEach(packet =>
-		soc.send(packet, 0, packet.length, psn.DEFAULT_PORT, psn.DEFAULT_MULTICAST_ADDRESS, () => {
+		soc.send(packet, 0, packet.length, DEFAULT_PORT, DEFAULT_MULTICAST_ADDRESS, () => {
 			console.log(`Sending dataPacket ${counter}`)
 		}),
 	)
@@ -80,7 +80,7 @@ const sendData = (soc: Socket) => {
 }
 
 // socket.on('listening', () => {
-// 	socket.addMembership(psn.DEFAULT_MULTICAST_ADDRESS)
+// 	socket.addMembership(DEFAULT_MULTICAST_ADDRESS)
 setInterval(() => sendData(socket), 1000 / fps)
 setInterval(() => sendInfo(socket), 1000)
 // })

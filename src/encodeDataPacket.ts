@@ -1,18 +1,18 @@
 import { packetHeader } from './packetHeader'
-import { psn } from './types'
+import { DATA_PACKET, MAX_PACKET_SIZE, System, Tracker, Vector3 } from './types'
 import { getUsedSize } from './utils/getUsedSize'
 import { wrapChunk } from './wrapChunk'
 
 export const encodeDataPacket = (
 	timestamp: number,
 	frame: number,
-	system: psn.System,
-	trackerList: psn.Tracker[],
+	system: System,
+	trackerList: Tracker[],
 ) => {
 
 	const packetHeaderChunk = wrapChunk(
 		packetHeader(timestamp, frame, 1, system),
-		psn.DATA_PACKET.CHUNKS.HEADER,
+		DATA_PACKET.CHUNKS.HEADER,
 		false,
 	)
 
@@ -32,7 +32,7 @@ export const encodeDataPacket = (
 		)
 
 		const totalSize = initialUsedBytes + getUsedSize(trackerChunkList) + trackerChunk.byteLength
-		if (totalSize > psn.MAX_PACKET_SIZE) {
+		if (totalSize > MAX_PACKET_SIZE) {
 
 			packets.push(createDataPacket(
 				packetHeaderChunk,
@@ -54,7 +54,7 @@ export const encodeDataPacket = (
 	return packets
 }
 
-const trackerDataChunks = (tracker: psn.Tracker): Buffer[] => {
+const trackerDataChunks = (tracker: Tracker): Buffer[] => {
 	// NOTE(kb): chunk ids are hard coded for now
 	return [
 		vecToChunk(tracker.position, 0x0000),
@@ -66,7 +66,7 @@ const trackerDataChunks = (tracker: psn.Tracker): Buffer[] => {
 	]
 }
 
-const vecToChunk = (vec: psn.Vector3, chunkId: number): Buffer => {
+const vecToChunk = (vec: Vector3, chunkId: number): Buffer => {
 	return wrapChunk(
 		Buffer.from(new Float32Array([vec.x, vec.y, vec.z])),
 		chunkId,
@@ -81,13 +81,13 @@ function createDataPacket(
 
 	const trackerListChunk = wrapChunk(
 		trackerChunkList,
-		psn.DATA_PACKET.CHUNKS.TRACKER_LIST,
+		DATA_PACKET.CHUNKS.TRACKER_LIST,
 		true,
 	)
 
 	const packet = wrapChunk(
 		[infoPacketHeaderChunk, trackerListChunk],
-		psn.DATA_PACKET.HEADER,
+		DATA_PACKET.HEADER,
 		true,
 	)
 

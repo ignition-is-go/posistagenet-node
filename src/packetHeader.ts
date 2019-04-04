@@ -1,10 +1,10 @@
-import { psn } from './types'
+import { System } from './types'
 
 export const packetHeader = (
 	timestamp: number,
 	frame: number,
 	packets: number,
-	system: psn.System,
+	system: System,
 ) => {
 	// header data packing
 	const infoHeaderBuffer = Buffer.alloc(12)
