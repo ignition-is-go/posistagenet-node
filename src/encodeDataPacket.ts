@@ -1,5 +1,6 @@
 import { packetHeader } from './packetHeader'
 import { psn } from './types'
+import { getUsedSize } from './utils/getUsedSize'
 import { wrapChunk } from './wrapChunk'
 
 export const encodeDataPacket = (
@@ -9,27 +10,48 @@ export const encodeDataPacket = (
 	trackerList: psn.Tracker[],
 ) => {
 
-	const trackerListChunk = wrapChunk(
-		trackerList.map(t => wrapChunk(
-			trackerDataChunks(t),
-			t.id,
-			true,
-		)),
-		psn.DATA_PACKET.CHUNKS.TRACKER_LIST,
-		true,
-	)
 	const packetHeaderChunk = wrapChunk(
 		packetHeader(timestamp, frame, 1, system),
 		psn.DATA_PACKET.CHUNKS.HEADER,
 		false,
 	)
 
-	return wrapChunk(
-		[packetHeaderChunk, trackerListChunk],
-		psn.DATA_PACKET.HEADER,
-		true,
-	)
+	const packets: Buffer[] = []
 
+	const initialUsedBytes = packetHeaderChunk.byteLength
+		+ 4 /* PSN_DATA_PACKAGE (header) */
+		+ 4 /* PSN_DATA_TRACKER_LIST (header) */
+		+ 4 /* PSN_DATA_TRACKER (header) */
+
+	let trackerChunkList: Buffer[] = []
+	trackerList.forEach(t => {
+		const trackerChunk = wrapChunk(
+			trackerDataChunks(t),
+			t.id,
+			true,
+		)
+
+		const totalSize = initialUsedBytes + getUsedSize(trackerChunkList) + trackerChunk.byteLength
+		if (totalSize > psn.MAX_PACKET_SIZE) {
+
+			packets.push(createDataPacket(
+				packetHeaderChunk,
+				trackerChunkList,
+			))
+
+			trackerChunkList = [trackerChunk]
+			return
+		}
+
+		trackerChunkList.push(trackerChunk)
+	})
+
+	packets.push(createDataPacket(
+		packetHeaderChunk,
+		trackerChunkList,
+	))
+
+	return packets
 }
 
 const trackerDataChunks = (tracker: psn.Tracker): Buffer[] => {
@@ -50,4 +72,24 @@ const vecToChunk = (vec: psn.Vector3, chunkId: number): Buffer => {
 		chunkId,
 		false,
 	)
+}
+
+function createDataPacket(
+	infoPacketHeaderChunk: Buffer,
+	trackerChunkList: Buffer[],
+) {
+
+	const trackerListChunk = wrapChunk(
+		trackerChunkList,
+		psn.DATA_PACKET.CHUNKS.TRACKER_LIST,
+		true,
+	)
+
+	const packet = wrapChunk(
+		[infoPacketHeaderChunk, trackerListChunk],
+		psn.DATA_PACKET.HEADER,
+		true,
+	)
+
+	return packet
 }

@@ -1,6 +1,7 @@
 import { packetHeader } from './packetHeader'
 import { psn } from './types'
 import { wrapChunk } from './wrapChunk'
+import { getUsedSize } from './utils/getUsedSize';
 
 export const encodeInfoPacket = (
 	timestamp: number,
@@ -10,27 +11,6 @@ export const encodeInfoPacket = (
 ) => {
 
 	const CHUNKS = psn.INFO_PACKET.CHUNKS
-
-	// const trackerName = wrapChunk(
-	// 	[Buffer.from(trackerList[0].name)],
-	// 	0,
-	// 	false,
-	// )
-	// const tracker = wrapChunk(
-	// 	[trackerName],
-	// 	trackerList[0].id,
-	// 	true,
-	// )
-
-	const trackerListChunk = wrapChunk(
-		trackerList.map(t => wrapChunk(
-			[wrapChunk([Buffer.from(t.name)], 0, false)],
-			t.id,
-			true,
-		)),
-		CHUNKS.TRACKER_LIST,
-		true,
-	)
 
 	const systemNameChunk = wrapChunk(
 		[Buffer.from(system.name)],
@@ -44,15 +24,65 @@ export const encodeInfoPacket = (
 		false,
 	)
 
-	return wrapChunk(
+	const packets: Buffer[] = []
+
+	const initialUsedBytes = infoPacketHeaderChunk.byteLength
+		+ systemNameChunk.byteLength
+		+ 4 /* PSN_INFO_PACKAGE (header) */
+		+ 4 /* PSN_INFO_TRACKER_LIST (header) */
+		+ 4 /* PSN_INFO_TRACKER (header) */
+
+	let trackerChunkList: Buffer[] = []
+	trackerList.forEach(t => {
+		const trackerChunk = wrapChunk(
+			[wrapChunk([Buffer.from(t.name)], 0, false)],
+			t.id,
+			true,
+		)
+
+		const totalSize = initialUsedBytes + getUsedSize(trackerChunkList) + trackerChunk.byteLength
+		if (totalSize > psn.MAX_PACKET_SIZE) {
+
+			packets.push(createInfoPacket(
+				infoPacketHeaderChunk,
+				systemNameChunk,
+				trackerChunkList,
+			))
+
+			trackerChunkList = [trackerChunk]
+			return
+		}
+
+		trackerChunkList.push(trackerChunk)
+	})
+
+	packets.push(createInfoPacket(
+		infoPacketHeaderChunk,
+		systemNameChunk,
+		trackerChunkList,
+	))
+
+	return packets
+}
+
+function createInfoPacket(
+	infoPacketHeaderChunk: Buffer,
+	systemNameChunk: Buffer,
+	trackerChunkList: Buffer[],
+) {
+
+	const trackerListChunk = wrapChunk(
+		trackerChunkList,
+		psn.INFO_PACKET.CHUNKS.TRACKER_LIST,
+		true,
+	)
+
+	const packet = wrapChunk(
 		[infoPacketHeaderChunk, systemNameChunk, trackerListChunk],
 		psn.INFO_PACKET.HEADER,
 		true,
 	)
 
+	return packet
 }
 
-// const packet = encodeInfoPacket(0, 1, theSystem, [theTrackedThing])
-// console.log(packet)
-// console.log(packet.length)
-// console.log(encodeInfoPacket(0, 1, theSystem, [theTrackedThing]).toString())
