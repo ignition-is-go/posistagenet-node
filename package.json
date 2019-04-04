@@ -1,8 +1,8 @@
 {
-	"name": "jokio-app",
+	"name": "@lucidcreative/posistagenet-node",
 	"version": "0.0.1",
-	"author": "",
-	"description": "",
+	"author": "KBjordahl",
+	"description": "NodeJS implementation of PosiStageNet https://www.posistage.net/",
 	"main": "dist/index.js",
 	"types": "dist/index.d.js",
 	"scripts": {
@@ -36,13 +36,16 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": ""
+		"url": "https://bitbucket.org/lucidcreative/posistagenet-node/src/master/"
 	},
 	"publishConfig": {
 		"access": "public"
 	},
 	"keywords": [
-		"jok"
+		"psn",
+		"posistagenet",
+		"lucid",
+		"tracking"
 	],
 	"license": "MIT",
 	"jest": {
