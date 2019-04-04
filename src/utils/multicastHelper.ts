@@ -13,4 +13,14 @@ export const multicastHelper = (localIp: string) => {
 		exclusive: false,
 	})
 
+	// convenience func
+	const sendSingle = (message: Buffer) => socket.send(
+		message, DEFAULT_PORT, DEFAULT_MULTICAST_ADDRESS,
+	)
+
+	return {
+		...socket,
+		sendPsn: (packets: Buffer[]) => packets.forEach(sendSingle),
+
+	}
 }
