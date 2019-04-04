@@ -4,13 +4,16 @@ import { encodeInfoPacket } from './encodeInfoPacket'
 import { psn } from './types'
 
 let counter = 1
+const fps = 250
 const startTime = Date.now()
 
 const socket = createSocket({ type: 'udp4', reuseAddr: true })
-socket.bind({ port: psn.DEFAULT_PORT })
+
+// the address here is the local ip of the NIC to use
+socket.bind({ port: psn.DEFAULT_PORT, address: '192.168.1.4' })
 
 const theSystem: psn.System = {
-	name: 'node test',
+	name: 'Node PSN Server',
 	version: '2.02',
 }
 
@@ -32,13 +35,27 @@ const theTrackedThing: psn.Tracker = {
 
 }
 
+const names = [
+	'Sun',
+	'Mercury',
+	'Venus',
+	'Earth',
+	'Mars',
+	'Jupiter',
+	'Saturn',
+	'Uranus',
+	'Neptune',
+	'Pluto',
+]
+
 const trackers = Array(10).fill(theTrackedThing).map((t, idx) => ({
 	...t,
 	id: idx,
-	name: `Tracker ${idx}`,
+	name: names[idx],
 }))
 
 const timestamp = () => (Date.now() - startTime) * 1000
+const incrementCounter = (current) => current >= fps ? 0 : current + 1
 
 const sendInfo = (soc: Socket) => {
 	const packets = encodeInfoPacket(timestamp(), counter, theSystem, trackers)
@@ -48,8 +65,7 @@ const sendInfo = (soc: Socket) => {
 			console.log(`Sending infoPacket ${packet}`)
 		}),
 	)
-
-	counter++
+	counter = incrementCounter(counter)
 }
 
 const sendData = (soc: Socket) => {
@@ -57,13 +73,14 @@ const sendData = (soc: Socket) => {
 
 	packets.forEach(packet =>
 		soc.send(packet, 0, packet.length, psn.DEFAULT_PORT, psn.DEFAULT_MULTICAST_ADDRESS, () => {
-			console.log(`Sending dataPacket ${packet}`)
+			console.log(`Sending dataPacket ${counter}`)
 		}),
 	)
+	counter = incrementCounter(counter)
 }
 
-socket.on('listening', () => {
-	socket.addMembership(psn.DEFAULT_MULTICAST_ADDRESS)
-	setInterval(() => sendData(socket), 1000 / 5)
-	setInterval(() => sendInfo(socket), 1000)
-})
+// socket.on('listening', () => {
+// 	socket.addMembership(psn.DEFAULT_MULTICAST_ADDRESS)
+setInterval(() => sendData(socket), 1000 / fps)
+setInterval(() => sendInfo(socket), 1000)
+// })
