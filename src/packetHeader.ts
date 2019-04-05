@@ -8,7 +8,8 @@ export const packetHeader = (
 ) => {
 	// header data packing
 	const infoHeaderBuffer = Buffer.alloc(12)
-	infoHeaderBuffer.writeUIntLE(timestamp, 4, 4)
+	infoHeaderBuffer.writeUInt32LE(timestamp % Math.pow(2, 32), 0)
+	infoHeaderBuffer.writeUInt32LE(Math.min((timestamp >> 32), Math.pow(2, 32)), 4)
 	const versionParts = system.version.split('.')
 	infoHeaderBuffer.writeUInt8(parseInt(versionParts[0], 10), 8)
 	infoHeaderBuffer.writeUInt8(parseInt(versionParts[1], 10), 9)
