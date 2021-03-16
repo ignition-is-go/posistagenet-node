@@ -67,7 +67,7 @@ const trackerDataChunks = (tracker: Tracker): Buffer[] => {
 }
 
 const vecToChunk = (vec: Vector3, chunkId: number): Buffer => {
-	const buffer = Buffer.alloc(12)
+	const buffer = Buffer.allocUnsafe(12)
 	buffer.writeFloatLE(vec.x, 0)
 	buffer.writeFloatLE(vec.y, 4)
 	buffer.writeFloatLE(vec.z, 8)
