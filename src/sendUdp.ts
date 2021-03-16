@@ -32,7 +32,7 @@ const theTrackedThing: Tracker = {
 	acceleration: zeroVector,
 	target: zeroVector,
 	status: true,
-
+	validity: 1,
 }
 
 const names = [

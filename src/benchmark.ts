@@ -17,6 +17,7 @@ const theTrackedThing: Tracker = {
 	acceleration: zeroVector,
 	target: zeroVector,
 	status: true,
+	validity: 1,
 }
 
 const trackers = Array(10).fill(theTrackedThing).map((t, idx) => ({
