@@ -13,6 +13,7 @@ export interface Tracker {
 	orientation: Vector3 // rotation is in RADIANS!
 	target: Vector3
 	status: boolean
+	validity: number
 }
 
 export interface Vector3 {

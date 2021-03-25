@@ -60,17 +60,27 @@ const trackerDataChunks = (tracker: Tracker): Buffer[] => {
 		vecToChunk(tracker.position, 0x0000),
 		vecToChunk(tracker.speed, 0x0001),
 		vecToChunk(tracker.orientation, 0x0002),
-		wrapChunk(Buffer.from([1]), 0x0003, false),
+		floatToChunk(tracker.validity, 0x0003),
 		vecToChunk(tracker.acceleration, 0x0004),
 		vecToChunk(tracker.target, 0x0005),
 	]
 }
 
 const vecToChunk = (vec: Vector3, chunkId: number): Buffer => {
-	const buffer = Buffer.alloc(12)
+	const buffer = Buffer.allocUnsafe(12)
 	buffer.writeFloatLE(vec.x, 0)
 	buffer.writeFloatLE(vec.y, 4)
 	buffer.writeFloatLE(vec.z, 8)
+	return wrapChunk(
+		buffer,
+		chunkId,
+		false,
+	)
+}
+
+const floatToChunk = (value: number, chunkId: number): Buffer => {
+	const buffer = Buffer.allocUnsafe(4)
+	buffer.writeFloatLE(value, 0)
 	return wrapChunk(
 		buffer,
 		chunkId,
