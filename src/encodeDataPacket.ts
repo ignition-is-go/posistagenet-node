@@ -56,14 +56,14 @@ export const encodeDataPacket = (
 
 const trackerDataChunks = (tracker: Tracker): Buffer[] => {
 	// NOTE(kb): chunk ids are hard coded for now
-	return [
-		vecToChunk(tracker.position, 0x0000),
-		vecToChunk(tracker.speed, 0x0001),
-		vecToChunk(tracker.orientation, 0x0002),
-		floatToChunk(tracker.validity, 0x0003),
-		vecToChunk(tracker.acceleration, 0x0004),
-		vecToChunk(tracker.target, 0x0005),
-	]
+	let r:Buffer[] = [];
+	if (tracker.position) r.push(vecToChunk(tracker.position, 0x0000));
+	if (tracker.speed) r.push(vecToChunk(tracker.speed, 0x0000));
+	if (tracker.orientation) r.push(vecToChunk(tracker.orientation, 0x0000));
+	if (tracker.validity) r.push(floatToChunk(tracker.validity, 0x0003));
+	if (tracker.acceleration) r.push(vecToChunk(tracker.acceleration, 0x0000));
+	if (tracker.target) r.push(vecToChunk(tracker.target, 0x0000));
+	return r;
 }
 
 const vecToChunk = (vec: Vector3, chunkId: number): Buffer => {
