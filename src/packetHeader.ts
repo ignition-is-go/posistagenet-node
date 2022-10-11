@@ -7,9 +7,10 @@ export const packetHeader = (
 	system: System,
 ) => {
 	// header data packing
+	const bits32 = Math.pow(2, 32)
 	const infoHeaderBuffer = Buffer.alloc(12)
-	infoHeaderBuffer.writeUInt32LE(timestamp % Math.pow(2, 32), 0)
-	infoHeaderBuffer.writeUInt32LE(Math.min((timestamp >> 32), Math.pow(2, 32)), 4)
+	infoHeaderBuffer.writeUInt32LE(timestamp % bits32, 0)
+	infoHeaderBuffer.writeUInt32LE(Math.min(Math.floor(timestamp / bits32), bits32), 4)
 	const versionParts = system.version.split('.')
 	infoHeaderBuffer.writeUInt8(parseInt(versionParts[0], 10), 8)
 	infoHeaderBuffer.writeUInt8(parseInt(versionParts[1], 10), 9)
