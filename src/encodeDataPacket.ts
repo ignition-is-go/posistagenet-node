@@ -1,5 +1,5 @@
 import { packetHeader } from './packetHeader'
-import { DATA_PACKET, MAX_PACKET_SIZE, System, Tracker, Vector3 } from './types'
+import { DATA_PACKET, MAX_PACKET_SIZE, DATA_TYPE, System, Tracker, Vector3 } from './types'
 import { getUsedSize } from './utils/getUsedSize'
 import { wrapChunk } from './wrapChunk'
 
@@ -55,15 +55,14 @@ export const encodeDataPacket = (
 }
 
 const trackerDataChunks = (tracker: Tracker): Buffer[] => {
-	// NOTE(kb): chunk ids are hard coded for now
-	return [
-		vecToChunk(tracker.position, 0x0000),
-		vecToChunk(tracker.speed, 0x0001),
-		vecToChunk(tracker.orientation, 0x0002),
-		floatToChunk(tracker.validity, 0x0003),
-		vecToChunk(tracker.acceleration, 0x0004),
-		vecToChunk(tracker.target, 0x0005),
-	]
+	let r:Buffer[] = [];
+	if (tracker.position) r.push(vecToChunk(tracker.position, DATA_TYPE.TRACKER_POS));
+	if (tracker.speed) r.push(vecToChunk(tracker.speed, DATA_TYPE.TRACKER_SPEED));
+	if (tracker.orientation) r.push(vecToChunk(tracker.orientation, DATA_TYPE.TRACKER_ORI));
+	if (tracker.validity) r.push(floatToChunk(tracker.validity, DATA_TYPE.TRACKER_STATUS));
+	if (tracker.acceleration) r.push(vecToChunk(tracker.acceleration, DATA_TYPE.TRACKER_ACCEL));
+	if (tracker.target) r.push(vecToChunk(tracker.target, DATA_TYPE.TRACKER_TRGTPOS));
+	return r;
 }
 
 const vecToChunk = (vec: Vector3, chunkId: number): Buffer => {
