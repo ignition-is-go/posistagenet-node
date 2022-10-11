@@ -7,13 +7,12 @@ export interface System {
 export interface Tracker {
 	id: number
 	name: string
-	position: Vector3
-	speed: Vector3
-	acceleration: Vector3
-	orientation: Vector3 // rotation is in RADIANS!
-	target: Vector3
-	status: boolean
-	validity: number
+	position?: Vector3
+	speed?: Vector3
+	acceleration?: Vector3
+	orientation?: Vector3 // rotation is in RADIANS!
+	target?: Vector3
+	validity?: number
 }
 
 export interface Vector3 {
@@ -25,6 +24,16 @@ export interface Vector3 {
 export enum PACKET_TYPE {
 	INFO = 0x6756,
 	DATA = 0x6755,
+}
+
+export enum DATA_TYPE {
+	TRACKER_POS = 0x0000,
+	TRACKER_SPEED = 0x0001,
+	TRACKER_ORI = 0x0002,
+	TRACKER_STATUS = 0x0003,
+	TRACKER_ACCEL = 0x0004,
+	TRACKER_TRGTPOS = 0x0005,
+	TRACKER_TIMESTAMP = 0x0006
 }
 
 export namespace INFO_PACKET {
