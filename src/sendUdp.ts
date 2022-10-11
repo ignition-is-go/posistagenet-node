@@ -31,7 +31,6 @@ const theTrackedThing: Tracker = {
 	speed: zeroVector,
 	acceleration: zeroVector,
 	target: zeroVector,
-	status: true,
 	validity: 1,
 }
 
